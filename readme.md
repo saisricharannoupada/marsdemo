@@ -1,1 +1,1 @@
-gitops flux abcd efghgfvhbjnkml,;.vhgbjnmk;,lfhgjhknlmkdasga
+Gitops Edge Implementation
