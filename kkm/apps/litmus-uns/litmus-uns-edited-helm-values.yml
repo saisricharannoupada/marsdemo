@@ -36,7 +36,7 @@ data:
        pullPolicy: IfNotPresent
    
    imagePullSecrets:
-     -name: acr-secret
+     -name: acr-secret1
    
    nameOverride: ""
    fullnameOverride: ""
