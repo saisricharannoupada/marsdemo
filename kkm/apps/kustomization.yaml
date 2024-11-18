@@ -6,3 +6,4 @@ resources:
   - grafana
   - postgresql
   - litmus-edge
+  - litmus-uns
