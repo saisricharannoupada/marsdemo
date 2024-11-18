@@ -37,7 +37,7 @@ data:
 
     # Correct imagePullSecrets as a list (empty if no secret)
     imagePullSecrets:
-      - name: acr-secret  # Replace with the actual secret name, if necessary.
+      - name: uns-acr-secret  # Replace with the actual secret name, if necessary.
     
     nameOverride: ""
     fullnameOverride: ""
