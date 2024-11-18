@@ -11,6 +11,15 @@ spec:
     requests:
       storage: 1Gi
 ---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: grafana-admin-secret
+type: Opaque
+data:
+  GF_SECURITY_ADMIN_USER: YWRtaW4=
+  GF_SECURITY_ADMIN_PASSWORD: bWFyc19ncmFmYW5h 
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -41,6 +50,9 @@ spec:
             - containerPort: 3000
               name: http-grafana
               protocol: TCP
+          envFrom:
+            - secretRef:
+                name: grafana-admin-secret 
           readinessProbe:
             failureThreshold: 3
             httpGet:
