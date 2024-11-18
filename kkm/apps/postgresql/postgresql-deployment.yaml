@@ -38,16 +38,17 @@ data:
 ---
 # ConfigMap for PostgreSQL credentials (username, password, and database)
 apiVersion: v1
-kind: ConfigMap
+kind: Secret
 metadata:
   name: postgres-secret
-  namespace: postgresql  
+  namespace: postgresql
   labels:
     app: postgres
+type: Opaque
 data:
-  POSTGRES_DB: ps_db
-  POSTGRES_USER: admin
-  POSTGRES_PASSWORD: mars_postgresql
+  POSTGRES_DB: "ps_db"              
+  POSTGRES_USER: YWRtaW4=            
+  POSTGRES_PASSWORD: bWFyc19wb3N0Z3Jlc3F1ZWw= 
 ---
 # Persistent Volume definition 
 apiVersion: v1
@@ -108,7 +109,7 @@ spec:
           ports:
             - containerPort: 5432
           envFrom:
-            - configMapRef:
+            - secretRef:
                 name: postgres-secret
           env:
             - name: PGDATA

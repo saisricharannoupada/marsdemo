@@ -41,7 +41,7 @@ spec:
         supplementalGroups:
           - 0
       imagePullSecrets:
-        - name: acr-secret  
+        - name: grafana-acr-secret 
       containers:
         - name: grafana
           image: litmus.azurecr.io/grafana:latest
