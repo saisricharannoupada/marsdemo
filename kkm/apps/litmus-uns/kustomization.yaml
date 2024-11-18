@@ -3,7 +3,6 @@ kind: Kustomization
 namespace: uns
 
 resources:
-  - acr-secret.yml
   - litmusautomation-uns-centralportal-secret.yml
   - litmus-uns-edited-helm-values.yml
   - litmus-uns-helmrepository.yaml
