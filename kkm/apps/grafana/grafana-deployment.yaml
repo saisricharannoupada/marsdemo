@@ -31,11 +31,9 @@ spec:
         fsGroup: 472
         supplementalGroups:
           - 0
-      imagePullSecrets:
-        - name: acr-secret  
       containers:
         - name: grafana
-          image: litmus.azurecr.io/grafana:latest
+          image: grafana/grafana:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000
@@ -76,8 +74,9 @@ kind: Service
 metadata:
   name: grafana
   namespace: kkm
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
 spec:
-  type: LoadBalancer   # Changed to LoadBalancer for external access
   ports:
     - port: 3000
       protocol: TCP
@@ -85,3 +84,4 @@ spec:
   selector:
     app: grafana
   sessionAffinity: None
+  type: LoadBalancer
