@@ -1,4 +1,18 @@
 ---
+# Secret for PostgreSQL credentials (username, password, and database)
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-secret
+  namespace: postgresql
+  labels:
+    app: postgres
+type: Opaque
+data:
+  POSTGRES_DB: cHNfZGI=  # Base64-encoded value of 'ps_db'
+  POSTGRES_USER: YWRtaW4=  # Base64-encoded value of 'admin'
+  POSTGRES_PASSWORD: bWFyX3Bvc3RncmVzcWw=  # Base64-encoded value of 'mars_postgresql'
+---
 # ConfigMap for PostgreSQL custom configurations (postgresql.conf and pg_hba.conf)
 apiVersion: v1
 kind: ConfigMap
@@ -11,45 +25,14 @@ data:
   postgresql.conf: |
     # Listen on all interfaces
     listen_addresses = '*'
-
-    # Enable pgaudit extension
-    shared_preload_libraries = 'pgaudit'
-
-    # pgaudit settings to log all types of activities
-    pgaudit.log = 'read, write, ddl, role, login, function'
-
-    # Whether to log system catalog queries
-    pgaudit.log_catalog = on
-
-    # Log verbosity for pgaudit
-    pgaudit.log_level = info
-
-    # Whether to log the first occurrence of a statement only
-    pgaudit.log_statement_once = off
-
-    # Whether to log function parameters
-    pgaudit.log_parameter = on
-
     # Optionally change other settings like max_connections, shared_buffers, etc.
+
   pg_hba.conf: |
-    # Allow all IPs to connect (adjust as needed for your security policy)
+    # Allow all IPs to connect
     host    all             all             0.0.0.0/0            md5
     host    all             all             ::/0                 md5
 ---
-# ConfigMap for PostgreSQL credentials (username, password, and database)
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: postgres-secret
-  namespace: postgresql  
-  labels:
-    app: postgres
-data:
-  POSTGRES_DB: ps_db
-  POSTGRES_USER: admin
-  POSTGRES_PASSWORD: mars_postgresql
----
-# Persistent Volume definition 
+# Persistent Volume definition with generic name
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -67,7 +50,7 @@ spec:
   hostPath:
     path: /data/postgresql
 ---
-# Persistent Volume Claim definition 
+# Persistent Volume Claim definition with generic name
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -83,7 +66,7 @@ spec:
     requests:
       storage: 10Gi
 ---
-# Deployment for PostgreSQL with pgaudit enabled
+# Deployment for PostgreSQL (generic name)
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -100,16 +83,16 @@ spec:
         app: postgres
     spec:
       imagePullSecrets:
-        - name: postgresql-acr-secret  # Image pull secret for ACR authentication
+        - name: postgresql-acr-secret  # Image pull secret for Azure Container Registry
       containers:
         - name: postgres
-          image: litmus.azurecr.io/postgres:12  # PostgreSQL image from ACR
+          image: litmus.azurecr.io/postgres:12 
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 5432
           envFrom:
-            - configMapRef:
-                name: postgres-secret
+            - secretRef:
+                name: postgres-secret  # Reference to the secret for credentials
           env:
             - name: PGDATA
               value: /var/lib/postgresql/data
@@ -130,7 +113,7 @@ spec:
           configMap:
             name: postgres-config
 ---
-# Service definition for PostgreSQL
+# Service definition for PostgreSQL with internal LoadBalancer for Azure
 apiVersion: v1
 kind: Service
 metadata:
