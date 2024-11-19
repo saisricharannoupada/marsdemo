@@ -1,35 +1,13 @@
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: grafana-pvc
-  namespace: grafana
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: grafana-admin-secret
-type: Opaque
-data:
-  GF_SECURITY_ADMIN_USER: YWRtaW4= # 'admin' base64 encoded
-  GF_SECURITY_ADMIN_PASSWORD: bWFyc19ncmFmYW5h # 'mars_grafana' base64 encoded
----
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  labels:
-    app: grafana
   name: grafana
   namespace: grafana
+  labels:
+    app: grafana
 spec:
   serviceName: "grafana"
-  replicas: 2  # Set replicas to 2 for high availability
+  replicas: 2  # Two replicas
   selector:
     matchLabels:
       app: grafana
@@ -80,10 +58,15 @@ spec:
           volumeMounts:
             - mountPath: /var/lib/grafana
               name: grafana-pv
-      volumes:
-        - name: grafana-pv
-          persistentVolumeClaim:
-            claimName: grafana-pvc
+  volumeClaimTemplates:
+    - metadata:
+        name: grafana-pv
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
 ---
 apiVersion: v1
 kind: Service
@@ -91,7 +74,7 @@ metadata:
   name: grafana
   namespace: grafana
 spec:
-  type: LoadBalancer   # Changed to LoadBalancer for external access
+  type: LoadBalancer   # LoadBalancer service for external access
   ports:
     - port: 3000
       protocol: TCP
