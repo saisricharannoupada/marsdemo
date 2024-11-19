@@ -32,7 +32,7 @@ spec:
               protocol: TCP
           envFrom:
             - secretRef:
-                name: grafana-admin-secret
+                name: grafana-acr-secret
           readinessProbe:
             failureThreshold: 3
             httpGet:
