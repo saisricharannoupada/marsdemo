@@ -7,7 +7,7 @@ metadata:
     app: grafana
 spec:
   serviceName: "grafana"
-  replicas: 2  # Two replicas
+  replicas: 1  # Two replicas
   selector:
     matchLabels:
       app: grafana
