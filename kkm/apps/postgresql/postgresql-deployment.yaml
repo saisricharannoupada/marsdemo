@@ -47,8 +47,8 @@ metadata:
 type: Opaque
 data:
   POSTGRES_DB: "ps_db"              
-  POSTGRES_USER: YWRtaW4=            
-  POSTGRES_PASSWORD: bWFyc19wb3N0Z3Jlc3F1ZWw= 
+  POSTGRES_USER: "admin"            
+  POSTGRES_PASSWORD: "mars_postgresql" 
 ---
 # Persistent Volume definition 
 apiVersion: v1
