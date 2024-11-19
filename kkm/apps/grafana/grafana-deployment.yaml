@@ -6,7 +6,7 @@ metadata:
   namespace: grafana
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
       storage: 1Gi
@@ -21,14 +21,13 @@ data:
   GF_SECURITY_ADMIN_PASSWORD: bWFyc19ncmFmYW5h # 'mars_grafana' base64 encoded
 ---
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   labels:
     app: grafana
   name: grafana
   namespace: grafana
 spec:
-  serviceName: "grafana"
   replicas: 2  # Set replicas to 2 for high availability
   selector:
     matchLabels:
