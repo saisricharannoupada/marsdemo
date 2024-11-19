@@ -24,25 +24,10 @@ spec:
           ports:
             - containerPort: 8086
               name: influxdb
-          volumeMounts:
-            - mountPath: /var/lib/influxdb2
-              name: data
-      volumes:
-        - name: data
-          persistentVolumeClaim:
-            claimName: influxdb-data
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: influxdb-data
-  namespace: influxdb
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 2Gi
+          volumeMounts: # This section is now commented out
+            # - mountPath: /var/lib/influxdb2
+            #   name: data
+      # volumes section removed
 ---
 apiVersion: v1
 kind: Service
