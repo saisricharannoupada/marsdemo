@@ -17,7 +17,7 @@ spec:
         app: influxdb
     spec:
       imagePullSecrets:
-        - name: influxdb-acr-secret1
+        - name: influxdb-acr-secret
       containers:
         - image: litmus.azurecr.io/influxdb:2.7 
           name: influxdb
