@@ -1,10 +1,24 @@
 ---
+# Secret for PostgreSQL credentials (username, password, and database)
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-secret
+  namespace: postgresql
+  labels:
+    app: postgres
+type: Opaque
+data:
+  POSTGRES_DB: cHNfZGI=  # Base64-encoded value of 'ps_db'
+  POSTGRES_USER: YWRtaW4=  # Base64-encoded value of 'admin'
+  POSTGRES_PASSWORD: bWFyX3Bvc3RncmVzcWw=  # Base64-encoded value of 'mars_postgresql'
+---
 # ConfigMap for PostgreSQL custom configurations (postgresql.conf and pg_hba.conf)
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: postgres-config
-  namespace: postgresql  # Set to 'postgresql' namespace
+  namespace: postgresql  
   labels:
     app: postgres
 data:
@@ -18,25 +32,12 @@ data:
     host    all             all             0.0.0.0/0            md5
     host    all             all             ::/0                 md5
 ---
-# ConfigMap for PostgreSQL credentials (username, password, and database)
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: postgres-secret
-  namespace: postgresql  # Set to 'postgresql' namespace
-  labels:
-    app: postgres
-data:
-  POSTGRES_DB: ps_db
-  POSTGRES_USER: admin
-  POSTGRES_PASSWORD: mars_postgresql
----
 # Persistent Volume definition with generic name
 apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: postgres-volume
-  namespace: postgresql  # Set to 'postgresql' namespace
+  namespace: postgresql  
   labels:
     type: local
     app: postgres
@@ -54,7 +55,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: postgres-volume-claim
-  namespace: postgresql  # Set to 'postgresql' namespace
+  namespace: postgresql  
   labels:
     app: postgres
 spec:
@@ -70,7 +71,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: postgres
-  namespace: postgresql  # Set to 'postgresql' namespace
+  namespace: postgresql  
 spec:
   replicas: 1
   selector:
@@ -82,16 +83,16 @@ spec:
         app: postgres
     spec:
       imagePullSecrets:
-        - name: acr-secret
+        - name: postgresql-acr-secret  # Image pull secret for Azure Container Registry
       containers:
         - name: postgres
-          image: litmus.azurecr.io/postgres:12
+          image: litmus.azurecr.io/postgres:12 
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 5432
           envFrom:
-            - configMapRef:
-                name: postgres-secret  # Reference updated to postgres-secret
+            - secretRef:
+                name: postgres-secret  # Reference to the secret for credentials
           env:
             - name: PGDATA
               value: /var/lib/postgresql/data
@@ -117,7 +118,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: postgres
-  namespace: postgresql  # Set to 'postgresql' namespace
+  namespace: postgresql  
   labels:
     app: postgres
 spec:
