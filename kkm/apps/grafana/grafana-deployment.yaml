@@ -1,3 +1,14 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: grafana-secret
+  namespace: grafana
+type: Opaque
+data:
+  GF_SECURITY_ADMIN_USER: YWRtaW4=  # base64-encoded value for 'admin'
+  GF_SECURITY_ADMIN_PASSWORD: cGFzc3dvcmQ=  # base64-encoded value for 'password'
+---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -32,7 +43,7 @@ spec:
               protocol: TCP
           envFrom:
             - secretRef:
-                name: grafana-acr-secret
+                name: grafana-secret  # Reference to the grafana-secret for sensitive data
           readinessProbe:
             failureThreshold: 3
             httpGet:
