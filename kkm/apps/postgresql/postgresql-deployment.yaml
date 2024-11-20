@@ -11,7 +11,7 @@ type: Opaque
 data:
   POSTGRES_DB: cHNfZGI=  # Base64-encoded value of 'ps_db'
   POSTGRES_USER: YWRtaW4=  # Base64-encoded value of 'admin'
-  POSTGRES_PASSWORD: bWFyX3Bvc3RncmVzcWw=  # Base64-encoded value of 'mars_postgresql'
+  POSTGRES_PASSWORD: bWFyX3Bvc3RncmVzcWw=  # Base64-encoded value of 'mar_postgresql'
 ---
 # ConfigMap for PostgreSQL custom configurations (postgresql.conf and pg_hba.conf)
 apiVersion: v1
