@@ -12,7 +12,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: litmus-uns-repo
-        namespace: uns
+        namespace: influxdb
   values:
     replicaCount: 1            # Example: Set the number of replicas
     service:
