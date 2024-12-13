@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: litmus-uns-values
-  namespace: influxdb
+  namespace: kkm
 data:
   values.yaml: |
     images:
