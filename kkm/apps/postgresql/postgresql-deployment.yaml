@@ -3,10 +3,10 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: postgres-secret
+  name: postgres-secret-2  # Updated secret name
   namespace: kkm
   labels:
-    app: postgres
+    app: postgres-2  # Updated label to match the second deployment
 type: Opaque
 data:
   POSTGRES_DB: cHNfZGI=  # Base64-encoded value of 'ps_db'
@@ -17,10 +17,10 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: postgres-config
+  name: postgres-config-2  # Updated ConfigMap name
   namespace: kkm  
   labels:
-    app: postgres
+    app: postgres-2  # Updated label
 data:
   postgresql.conf: |
     # Listen on all interfaces
@@ -36,11 +36,11 @@ data:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: postgres-volume
+  name: postgres-volume-2  # Updated volume name
   namespace: kkm  
   labels:
     type: local
-    app: postgres
+    app: postgres-2  # Updated label
 spec:
   storageClassName: default
   capacity:
@@ -48,16 +48,16 @@ spec:
   accessModes:
     - ReadWriteMany
   hostPath:
-    path: /data/postgresql
+    path: /data/postgresql2  # Updated path to avoid conflict
 ---
 # Persistent Volume Claim definition with generic name
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: postgres-volume-claim
+  name: postgres-volume-claim-2  # Updated PVC name
   namespace: kkm  
   labels:
-    app: postgres
+    app: postgres-2  # Updated label
 spec:
   storageClassName: default
   accessModes:
@@ -66,21 +66,21 @@ spec:
     requests:
       storage: 10Gi
 ---
-# Deployment for PostgreSQL (generic name)
+# Deployment for PostgreSQL (second deployment with unique name)
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: postgres
+  name: postgres-2  # Updated deployment name
   namespace: kkm  
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: postgres
+      app: postgres-2  # Updated label
   template:
     metadata:
       labels:
-        app: postgres
+        app: postgres-2  # Updated label
     spec:
       imagePullSecrets:
         - name: postgresql-acr-secret  # Image pull secret for Azure Container Registry
@@ -92,38 +92,38 @@ spec:
             - containerPort: 5432
           envFrom:
             - secretRef:
-                name: postgres-secret  # Reference to the secret for credentials
+                name: postgres-secret-2  # Reference to the second secret
           env:
             - name: PGDATA
               value: /var/lib/postgresql/data
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
-              name: postgresdata
+              name: postgresdata-2  # Updated volume name
             - mountPath: /etc/postgresql/postgresql.conf
-              name: postgres-config
+              name: postgres-config-2  # Updated ConfigMap name
               subPath: postgresql.conf
             - mountPath: /etc/postgresql/pg_hba.conf
-              name: postgres-config
+              name: postgres-config-2  # Updated ConfigMap name
               subPath: pg_hba.conf
       volumes:
-        - name: postgresdata
+        - name: postgresdata-2
           persistentVolumeClaim:
-            claimName: postgres-volume-claim
-        - name: postgres-config
+            claimName: postgres-volume-claim-2  # Updated PVC reference
+        - name: postgres-config-2
           configMap:
-            name: postgres-config
+            name: postgres-config-2  # Updated ConfigMap reference
 ---
-# Service definition for PostgreSQL with internal LoadBalancer for Azure
+# Service definition for PostgreSQL with internal LoadBalancer for Azure (second instance)
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgres
+  name: postgres-2  # Updated service name
   namespace: kkm  
   labels:
-    app: postgres
+    app: postgres-2  # Updated label
 spec:
   type: LoadBalancer
   ports:
     - port: 5432
   selector:
-    app: postgres
+    app: postgres-2  # Updated selector
