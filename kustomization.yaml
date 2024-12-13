@@ -1,0 +1,9 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: kkm
+resources:
+  - ./kkm/apps/influxdb
+  - ./kkm/apps/grafana
+  - ./kkm/apps/postgresql
+  - ./kkm/apps/litmus-uns
+  - ./kkm/apps/litmus-edge
